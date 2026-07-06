@@ -1,0 +1,254 @@
+"use client";
+
+import { useState, FormEvent } from "react";
+import { Elements } from "@stripe/react-stripe-js";
+import { apiGet, apiPost, ApiError } from "@/lib/api";
+import { getStripe } from "@/lib/stripe";
+import type { CreateBookingRequest, CreateBookingResponse, SpotDto, SpotType } from "@/lib/types";
+import CheckoutForm from "@/components/CheckoutForm";
+
+const SPOT_TYPES: { value: SpotType | ""; label: string }[] = [
+  { value: "", label: "Any type" },
+  { value: "TRUCK", label: "Truck" },
+  { value: "TRAILER", label: "Trailer" },
+  { value: "FLEET_VEHICLE", label: "Fleet Vehicle" },
+];
+
+function formatMoney(cents: number) {
+  return `$${(cents / 100).toFixed(2)}`;
+}
+
+type Step = "search" | "select" | "details" | "pay";
+
+export default function BookPage() {
+  const [step, setStep] = useState<Step>("search");
+  const [type, setType] = useState<SpotType | "">("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [spots, setSpots] = useState<SpotDto[]>([]);
+  const [selectedSpot, setSelectedSpot] = useState<SpotDto | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const [customerName, setCustomerName] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
+  const [vehicleInfo, setVehicleInfo] = useState("");
+
+  const [booking, setBooking] = useState<CreateBookingResponse | null>(null);
+
+  async function handleSearch(e: FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      const params = new URLSearchParams({ start: startDate, end: endDate });
+      if (type) params.set("type", type);
+      const results = await apiGet<SpotDto[]>(`/api/spots/availability?${params.toString()}`);
+      setSpots(results);
+      setStep("select");
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Unable to search availability.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function selectSpot(spot: SpotDto) {
+    setSelectedSpot(spot);
+    setStep("details");
+  }
+
+  async function handleCreateBooking(e: FormEvent) {
+    e.preventDefault();
+    if (!selectedSpot) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const payload: CreateBookingRequest = {
+        spotId: selectedSpot.id,
+        startDate,
+        endDate,
+        customerName,
+        customerEmail,
+        customerPhone: customerPhone || undefined,
+        vehicleInfo: vehicleInfo || undefined,
+      };
+      const created = await apiPost<CreateBookingResponse>("/api/bookings", payload);
+      setBooking(created);
+      setStep("pay");
+    } catch (err) {
+      setError(
+        err instanceof ApiError
+          ? err.message
+          : "Unable to start booking. Please try a different spot or dates."
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="mx-auto max-w-2xl px-4 py-16">
+      <h1 className="text-3xl font-black">Book Parking</h1>
+      <p className="mt-2 text-white/70">Reserve a spot online and pay securely to confirm instantly.</p>
+
+      <StepIndicator step={step} />
+
+      {step === "search" && (
+        <form onSubmit={handleSearch} className="mt-8 space-y-5">
+          <div className="grid grid-cols-2 gap-4">
+            <label className="block">
+              <span className="mb-1 block text-sm font-semibold text-white/80">Start date</span>
+              <input
+                type="date"
+                required
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="input"
+              />
+            </label>
+            <label className="block">
+              <span className="mb-1 block text-sm font-semibold text-white/80">End date</span>
+              <input
+                type="date"
+                required
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="input"
+              />
+            </label>
+          </div>
+          <label className="block">
+            <span className="mb-1 block text-sm font-semibold text-white/80">Vehicle type</span>
+            <select value={type} onChange={(e) => setType(e.target.value as SpotType | "")} className="input">
+              {SPOT_TYPES.map((t) => (
+                <option key={t.value} value={t.value}>
+                  {t.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          {error && <p className="text-sm text-brand-red">{error}</p>}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-md bg-brand-red py-3 font-bold text-white hover:bg-brand-red-dark disabled:opacity-50 transition-colors"
+          >
+            {loading ? "Searching..." : "Check Availability"}
+          </button>
+        </form>
+      )}
+
+      {step === "select" && (
+        <div className="mt-8">
+          <button onClick={() => setStep("search")} className="mb-4 text-sm text-white/60 hover:text-brand-red">
+            &larr; Change dates
+          </button>
+          {spots.length === 0 ? (
+            <p className="text-white/70">No spots available for those dates. Try a different range.</p>
+          ) : (
+            <div className="grid gap-3 sm:grid-cols-2">
+              {spots.map((spot) => (
+                <button
+                  key={spot.id}
+                  onClick={() => selectSpot(spot)}
+                  className="rounded-lg border border-white/10 bg-brand-charcoal p-4 text-left hover:border-brand-red transition-colors"
+                >
+                  <p className="font-bold">{spot.spotNumber}</p>
+                  <p className="text-xs uppercase tracking-wide text-white/50">
+                    {spot.spotType.replace("_", " ")}
+                  </p>
+                  <p className="mt-2 text-brand-red font-semibold">{formatMoney(spot.dailyRateCents)}/day</p>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {step === "details" && selectedSpot && (
+        <form onSubmit={handleCreateBooking} className="mt-8 space-y-5">
+          <button
+            type="button"
+            onClick={() => setStep("select")}
+            className="mb-2 text-sm text-white/60 hover:text-brand-red"
+          >
+            &larr; Choose a different spot
+          </button>
+          <div className="rounded-lg border border-brand-red/40 bg-brand-red/10 p-4 text-sm">
+            Spot <strong>{selectedSpot.spotNumber}</strong> &middot; {startDate} to {endDate}
+          </div>
+          <label className="block">
+            <span className="mb-1 block text-sm font-semibold text-white/80">Full name</span>
+            <input required value={customerName} onChange={(e) => setCustomerName(e.target.value)} className="input" />
+          </label>
+          <label className="block">
+            <span className="mb-1 block text-sm font-semibold text-white/80">Email</span>
+            <input
+              type="email"
+              required
+              value={customerEmail}
+              onChange={(e) => setCustomerEmail(e.target.value)}
+              className="input"
+            />
+          </label>
+          <label className="block">
+            <span className="mb-1 block text-sm font-semibold text-white/80">Phone</span>
+            <input
+              type="tel"
+              value={customerPhone}
+              onChange={(e) => setCustomerPhone(e.target.value)}
+              className="input"
+            />
+          </label>
+          <label className="block">
+            <span className="mb-1 block text-sm font-semibold text-white/80">Vehicle (make/model/plate)</span>
+            <input value={vehicleInfo} onChange={(e) => setVehicleInfo(e.target.value)} className="input" />
+          </label>
+          {error && <p className="text-sm text-brand-red">{error}</p>}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-md bg-brand-red py-3 font-bold text-white hover:bg-brand-red-dark disabled:opacity-50 transition-colors"
+          >
+            {loading ? "Preparing checkout..." : "Continue to Payment"}
+          </button>
+        </form>
+      )}
+
+      {step === "pay" && booking && (
+        <div className="mt-8">
+          <p className="mb-4 rounded-lg border border-brand-red/40 bg-brand-red/10 p-4 text-sm">
+            Total due: <strong>{formatMoney(booking.amountCents)}</strong> &mdash; your spot is held for 15
+            minutes while you complete payment.
+          </p>
+          <Elements stripe={getStripe()} options={{ clientSecret: booking.clientSecret }}>
+            <CheckoutForm bookingId={booking.bookingId} />
+          </Elements>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function StepIndicator({ step }: { step: Step }) {
+  const steps: { key: Step; label: string }[] = [
+    { key: "search", label: "Dates" },
+    { key: "select", label: "Spot" },
+    { key: "details", label: "Details" },
+    { key: "pay", label: "Payment" },
+  ];
+  const activeIndex = steps.findIndex((s) => s.key === step);
+
+  return (
+    <div className="mt-6 flex gap-2 text-xs font-semibold uppercase tracking-wide">
+      {steps.map((s, i) => (
+        <span key={s.key} className={i <= activeIndex ? "text-brand-red" : "text-white/30"}>
+          {s.label}
+          {i < steps.length - 1 && <span className="mx-2 text-white/20">/</span>}
+        </span>
+      ))}
+    </div>
+  );
+}
