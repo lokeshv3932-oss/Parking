@@ -26,6 +26,7 @@ services:
       PGDATABASE: symmes
       PGUSER: symmes
       PGPASSWORD: symmes
+      PGSSLMODE: disable
       ALLOWED_ORIGINS: http://localhost:3000
       JWT_SECRET: local-dev-secret-change-me-local-dev-secret
       ADMIN_BOOTSTRAP_USERNAME: admin
