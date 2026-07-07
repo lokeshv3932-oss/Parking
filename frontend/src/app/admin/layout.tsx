@@ -54,7 +54,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               className={`block rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
                 pathname === item.href
                   ? "bg-brand-red text-white"
-                  : "text-white/70 hover:bg-white/5 hover:text-white"
+                  : "text-gray-600 hover:bg-black/5 hover:text-gray-900 dark:text-white/70 dark:hover:bg-white/5 dark:hover:text-white"
               }`}
             >
               {item.label}
@@ -62,7 +62,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           ))}
           <button
             onClick={handleLogout}
-            className="mt-4 block w-full rounded-md px-3 py-2 text-left text-sm font-semibold text-white/50 hover:bg-white/5 hover:text-brand-red"
+            className="mt-4 block w-full rounded-md px-3 py-2 text-left text-sm font-semibold text-gray-400 hover:bg-black/5 hover:text-brand-red dark:text-white/50 dark:hover:bg-white/5"
           >
             Log out
           </button>

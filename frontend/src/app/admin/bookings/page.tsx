@@ -65,9 +65,9 @@ export default function AdminBookingsPage() {
 
       {error && <p className="mt-4 text-sm text-brand-red">{error}</p>}
 
-      <div className="mt-6 overflow-x-auto rounded-lg border border-white/10">
+      <div className="mt-6 overflow-x-auto rounded-lg border border-black/10 dark:border-white/10">
         <table className="w-full text-left text-sm">
-          <thead className="bg-brand-charcoal text-white/60">
+          <thead className="bg-gray-50 text-gray-500 dark:bg-brand-charcoal dark:text-white/60">
             <tr>
               <th className="px-4 py-3">Spot</th>
               <th className="px-4 py-3">Dates</th>
@@ -79,14 +79,14 @@ export default function AdminBookingsPage() {
           </thead>
           <tbody>
             {page?.content.map((booking) => (
-              <tr key={booking.id} className="border-t border-white/10">
+              <tr key={booking.id} className="border-t border-black/10 dark:border-white/10">
                 <td className="px-4 py-3 font-semibold">{booking.spotNumber}</td>
                 <td className="px-4 py-3">
                   {booking.startDate} &rarr; {booking.endDate}
                 </td>
                 <td className="px-4 py-3">
                   <div>{booking.customerName}</div>
-                  <div className="text-white/40">{booking.customerEmail}</div>
+                  <div className="text-gray-400 dark:text-white/40">{booking.customerEmail}</div>
                 </td>
                 <td className="px-4 py-3">{formatMoney(booking.amountCents)}</td>
                 <td className="px-4 py-3">
@@ -107,7 +107,7 @@ export default function AdminBookingsPage() {
             ))}
             {page?.content.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-6 text-center text-white/50">
+                <td colSpan={6} className="px-4 py-6 text-center text-gray-500 dark:text-white/50">
                   No bookings found.
                 </td>
               </tr>
@@ -121,10 +121,10 @@ export default function AdminBookingsPage() {
 
 function StatusBadge({ status }: { status: BookingStatus }) {
   const colors: Record<BookingStatus, string> = {
-    PENDING_PAYMENT: "bg-yellow-500/20 text-yellow-400",
-    CONFIRMED: "bg-green-500/20 text-green-400",
-    CANCELLED: "bg-white/10 text-white/50",
-    EXPIRED: "bg-white/10 text-white/40",
+    PENDING_PAYMENT: "bg-yellow-500/20 text-yellow-700 dark:text-yellow-400",
+    CONFIRMED: "bg-green-500/20 text-green-700 dark:text-green-400",
+    CANCELLED: "bg-black/5 text-gray-500 dark:bg-white/10 dark:text-white/50",
+    EXPIRED: "bg-black/5 text-gray-400 dark:bg-white/10 dark:text-white/40",
   };
   return (
     <span className={`rounded px-2 py-1 text-xs font-semibold ${colors[status]}`}>

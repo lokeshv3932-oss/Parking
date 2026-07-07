@@ -38,11 +38,11 @@ export default function AdminLoginPage() {
       <h1 className="text-2xl font-black">Staff Login</h1>
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         <label className="block">
-          <span className="mb-1 block text-sm font-semibold text-white/80">Username</span>
+          <span className="mb-1 block text-sm font-semibold text-gray-700 dark:text-white/80">Username</span>
           <input required value={username} onChange={(e) => setUsername(e.target.value)} className="input" />
         </label>
         <label className="block">
-          <span className="mb-1 block text-sm font-semibold text-white/80">Password</span>
+          <span className="mb-1 block text-sm font-semibold text-gray-700 dark:text-white/80">Password</span>
           <input
             type="password"
             required

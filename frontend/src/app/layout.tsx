@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
+import { THEME_INIT_SCRIPT } from "@/components/ThemeToggle";
 
 export const metadata: Metadata = {
   title: "Symmes Fleet Parking & Repair | Fairfield, OH",
@@ -11,8 +12,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="flex min-h-screen flex-col bg-brand-black text-white">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
+      <body className="flex min-h-screen flex-col bg-white text-gray-900 dark:bg-brand-black dark:text-white">
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />

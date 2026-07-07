@@ -72,22 +72,22 @@ export default function AdminMechanicRequestsPage() {
         {page?.content.map((req) => {
           const next = NEXT_STATUS[req.status];
           return (
-            <div key={req.id} className="rounded-lg border border-white/10 bg-brand-charcoal p-4">
+            <div key={req.id} className="rounded-lg border border-black/10 bg-gray-50 p-4 dark:border-white/10 dark:bg-brand-charcoal">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="font-bold">
                     {req.customerName} &middot; {req.vehicleInfo}
                   </p>
-                  <p className="text-sm text-white/60">
+                  <p className="text-sm text-gray-500 dark:text-white/60">
                     {req.customerPhone} &middot; {req.customerEmail}
                   </p>
-                  <p className="mt-2 text-sm text-white/80">{req.issueDescription}</p>
+                  <p className="mt-2 text-sm text-gray-700 dark:text-white/80">{req.issueDescription}</p>
                   {req.preferredDate && (
-                    <p className="mt-1 text-xs text-white/40">Preferred: {req.preferredDate}</p>
+                    <p className="mt-1 text-xs text-gray-400 dark:text-white/40">Preferred: {req.preferredDate}</p>
                   )}
                 </div>
                 <div className="flex flex-col items-end gap-2">
-                  <span className="rounded bg-white/10 px-2 py-1 text-xs font-semibold">
+                  <span className="rounded bg-black/5 px-2 py-1 text-xs font-semibold dark:bg-white/10">
                     {req.status.replace("_", " ")}
                   </span>
                   {next && (
@@ -104,7 +104,7 @@ export default function AdminMechanicRequestsPage() {
             </div>
           );
         })}
-        {page?.content.length === 0 && <p className="text-white/50">No mechanic requests found.</p>}
+        {page?.content.length === 0 && <p className="text-gray-500 dark:text-white/50">No mechanic requests found.</p>}
       </div>
     </div>
   );

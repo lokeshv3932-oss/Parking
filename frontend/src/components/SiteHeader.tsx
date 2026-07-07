@@ -1,14 +1,15 @@
 import Link from "next/link";
+import ThemeToggle from "./ThemeToggle";
 
 export default function SiteHeader() {
   return (
-    <header className="border-b border-white/10 bg-brand-black/95 backdrop-blur sticky top-0 z-40">
+    <header className="sticky top-0 z-40 border-b border-black/10 bg-white/95 backdrop-blur dark:border-white/10 dark:bg-brand-black/95">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
         <Link href="/" className="flex flex-col leading-tight">
-          <span className="text-xl font-black tracking-wide text-white">
+          <span className="text-xl font-black tracking-wide text-gray-900 dark:text-white">
             SYMMES <span className="text-brand-red">FLEET</span>
           </span>
-          <span className="text-[10px] uppercase tracking-[0.2em] text-white/50">
+          <span className="text-[10px] uppercase tracking-[0.2em] text-gray-500 dark:text-white/50">
             Parking &amp; Repair — Fairfield, OH
           </span>
         </Link>
@@ -25,6 +26,7 @@ export default function SiteHeader() {
           >
             513-375-2022
           </a>
+          <ThemeToggle />
         </nav>
       </div>
     </header>

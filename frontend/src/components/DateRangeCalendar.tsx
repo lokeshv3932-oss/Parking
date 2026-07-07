@@ -68,12 +68,12 @@ export default function DateRangeCalendar({ startDate, endDate, onChange }: Date
   for (let day = 1; day <= daysInMonth; day++) cells.push(new Date(year, month, day));
 
   return (
-    <div className="rounded-lg border border-white/10 bg-brand-charcoal p-4">
+    <div className="rounded-lg border border-black/10 bg-gray-50 p-4 dark:border-white/10 dark:bg-brand-charcoal">
       <div className="mb-3 flex items-center justify-between">
         <button
           type="button"
           onClick={() => setViewMonth(new Date(year, month - 1, 1))}
-          className="rounded px-2 py-1 text-white/60 hover:bg-white/10 hover:text-brand-red"
+          className="rounded px-2 py-1 text-gray-500 hover:bg-black/5 hover:text-brand-red dark:text-white/60 dark:hover:bg-white/10"
           aria-label="Previous month"
         >
           &larr;
@@ -84,14 +84,14 @@ export default function DateRangeCalendar({ startDate, endDate, onChange }: Date
         <button
           type="button"
           onClick={() => setViewMonth(new Date(year, month + 1, 1))}
-          className="rounded px-2 py-1 text-white/60 hover:bg-white/10 hover:text-brand-red"
+          className="rounded px-2 py-1 text-gray-500 hover:bg-black/5 hover:text-brand-red dark:text-white/60 dark:hover:bg-white/10"
           aria-label="Next month"
         >
           &rarr;
         </button>
       </div>
 
-      <div className="mb-1 grid grid-cols-7 gap-1 text-center text-xs text-white/40">
+      <div className="mb-1 grid grid-cols-7 gap-1 text-center text-xs text-gray-400 dark:text-white/40">
         {WEEKDAYS.map((w) => (
           <div key={w}>{w}</div>
         ))}
@@ -112,12 +112,12 @@ export default function DateRangeCalendar({ startDate, endDate, onChange }: Date
               className={[
                 "aspect-square rounded text-sm transition-colors",
                 disabled
-                  ? "cursor-not-allowed text-white/20"
+                  ? "cursor-not-allowed text-gray-300 dark:text-white/20"
                   : selected
                     ? "bg-brand-red font-semibold text-white"
                     : inRange
-                      ? "bg-brand-red/20 text-white"
-                      : "text-white/80 hover:bg-white/10",
+                      ? "bg-brand-red/20 text-gray-900 dark:text-white"
+                      : "text-gray-700 hover:bg-black/5 dark:text-white/80 dark:hover:bg-white/10",
               ].join(" ")}
             >
               {d.getDate()}
@@ -126,7 +126,7 @@ export default function DateRangeCalendar({ startDate, endDate, onChange }: Date
         })}
       </div>
 
-      <div className="mt-3 flex justify-between text-xs text-white/50">
+      <div className="mt-3 flex justify-between text-xs text-gray-500 dark:text-white/50">
         <span>Start: {startDate || "—"}</span>
         <span>End: {endDate || "—"}</span>
       </div>

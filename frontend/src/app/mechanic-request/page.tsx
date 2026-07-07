@@ -45,11 +45,11 @@ export default function MechanicRequestPage() {
     return (
       <div className="mx-auto max-w-xl px-4 py-20 text-center">
         <h1 className="text-3xl font-black">Request Received</h1>
-        <p className="mt-4 text-white/70">
+        <p className="mt-4 text-gray-600 dark:text-white/70">
           Thanks, {result.customerName}. Our team will reach out at {result.customerPhone} to schedule
           your mechanic visit.
         </p>
-        <p className="mt-2 text-sm text-white/50">Reference #{result.id}</p>
+        <p className="mt-2 text-sm text-gray-500 dark:text-white/50">Reference #{result.id}</p>
       </div>
     );
   }
@@ -57,7 +57,7 @@ export default function MechanicRequestPage() {
   return (
     <div className="mx-auto max-w-xl px-4 py-16">
       <h1 className="text-3xl font-black">Request a Mechanic</h1>
-      <p className="mt-2 text-white/70">
+      <p className="mt-2 text-gray-600 dark:text-white/70">
         Tell us about the issue and we&apos;ll get back to you to schedule a visit.
       </p>
 
@@ -139,7 +139,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-sm font-semibold text-white/80">
+      <span className="mb-1 block text-sm font-semibold text-gray-700 dark:text-white/80">
         {label}
         {required && <span className="text-brand-red"> *</span>}
       </span>

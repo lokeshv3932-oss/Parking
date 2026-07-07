@@ -72,15 +72,15 @@ export default function AdminSpotsPage() {
             title={`${spot.spotType} - click to ${spot.active ? "mark maintenance" : "reactivate"}`}
             className={`rounded-md border p-2 text-center text-xs font-semibold transition-colors disabled:opacity-50 ${
               spot.active
-                ? "border-white/10 bg-brand-charcoal hover:border-brand-red"
-                : "border-yellow-500/40 bg-yellow-500/10 text-yellow-400"
+                ? "border-black/10 bg-gray-50 hover:border-brand-red dark:border-white/10 dark:bg-brand-charcoal"
+                : "border-yellow-500/40 bg-yellow-500/10 text-yellow-700 dark:text-yellow-400"
             }`}
           >
             {spot.spotNumber}
           </button>
         ))}
       </div>
-      <p className="mt-4 text-xs text-white/40">
+      <p className="mt-4 text-xs text-gray-400 dark:text-white/40">
         Click a spot to toggle between active and maintenance mode. Yellow = maintenance (excluded from
         availability).
       </p>

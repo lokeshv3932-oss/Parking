@@ -92,14 +92,14 @@ export default function BookPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-16">
       <h1 className="text-3xl font-black">Book Parking</h1>
-      <p className="mt-2 text-white/70">Reserve a spot online and pay securely to confirm instantly.</p>
+      <p className="mt-2 text-gray-600 dark:text-white/70">Reserve a spot online and pay securely to confirm instantly.</p>
 
       <StepIndicator step={step} />
 
       {step === "search" && (
         <form onSubmit={handleSearch} className="mx-auto mt-8 max-w-xl space-y-5">
           <div>
-            <span className="mb-1 block text-sm font-semibold text-white/80">Select your dates</span>
+            <span className="mb-1 block text-sm font-semibold text-gray-700 dark:text-white/80">Select your dates</span>
             <DateRangeCalendar
               startDate={startDate}
               endDate={endDate}
@@ -122,12 +122,12 @@ export default function BookPage() {
 
       {step === "select" && (
         <div className="mt-8">
-          <button onClick={() => setStep("search")} className="mb-4 text-sm text-white/60 hover:text-brand-red">
+          <button onClick={() => setStep("search")} className="mb-4 text-sm text-gray-500 hover:text-brand-red dark:text-white/60">
             &larr; Change dates
           </button>
 
           <label className="mb-4 block max-w-xs">
-            <span className="mb-1 block text-sm font-semibold text-white/80">Filter by vehicle type</span>
+            <span className="mb-1 block text-sm font-semibold text-gray-700 dark:text-white/80">Filter by vehicle type</span>
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value as SpotType | "")}
@@ -144,10 +144,10 @@ export default function BookPage() {
           {(() => {
             const filteredSpots = typeFilter ? spots.filter((s) => s.spotType === typeFilter) : spots;
             if (spots.length === 0) {
-              return <p className="text-white/70">No spots available for those dates. Try a different range.</p>;
+              return <p className="text-gray-600 dark:text-white/70">No spots available for those dates. Try a different range.</p>;
             }
             if (filteredSpots.length === 0) {
-              return <p className="text-white/70">No {typeFilter.replace("_", " ").toLowerCase()} spots available for those dates.</p>;
+              return <p className="text-gray-600 dark:text-white/70">No {typeFilter.replace("_", " ").toLowerCase()} spots available for those dates.</p>;
             }
             return (
               <div className="grid grid-cols-5 gap-2 sm:grid-cols-10">
@@ -156,7 +156,7 @@ export default function BookPage() {
                     key={spot.id}
                     onClick={() => selectSpot(spot)}
                     title={`${spot.spotType.replace("_", " ")} · ${formatMoney(spot.dailyRateCents)}/day`}
-                    className="rounded-md border border-white/10 bg-brand-charcoal p-2 text-center hover:border-brand-red transition-colors"
+                    className="rounded-md border border-black/10 bg-gray-50 p-2 text-center hover:border-brand-red dark:border-white/10 dark:bg-brand-charcoal transition-colors"
                   >
                     <p className="text-sm font-bold">{spot.spotNumber}</p>
                     <p className="text-[10px] font-semibold text-brand-red">{formatMoney(spot.dailyRateCents)}</p>
@@ -173,7 +173,7 @@ export default function BookPage() {
           <button
             type="button"
             onClick={() => setStep("select")}
-            className="mb-2 text-sm text-white/60 hover:text-brand-red"
+            className="mb-2 text-sm text-gray-500 hover:text-brand-red dark:text-white/60"
           >
             &larr; Choose a different spot
           </button>
@@ -181,11 +181,11 @@ export default function BookPage() {
             Spot <strong>{selectedSpot.spotNumber}</strong> &middot; {startDate} to {endDate}
           </div>
           <label className="block">
-            <span className="mb-1 block text-sm font-semibold text-white/80">Full name</span>
+            <span className="mb-1 block text-sm font-semibold text-gray-700 dark:text-white/80">Full name</span>
             <input required value={customerName} onChange={(e) => setCustomerName(e.target.value)} className="input" />
           </label>
           <label className="block">
-            <span className="mb-1 block text-sm font-semibold text-white/80">Email</span>
+            <span className="mb-1 block text-sm font-semibold text-gray-700 dark:text-white/80">Email</span>
             <input
               type="email"
               required
@@ -195,7 +195,7 @@ export default function BookPage() {
             />
           </label>
           <label className="block">
-            <span className="mb-1 block text-sm font-semibold text-white/80">Phone</span>
+            <span className="mb-1 block text-sm font-semibold text-gray-700 dark:text-white/80">Phone</span>
             <input
               type="tel"
               value={customerPhone}
@@ -204,7 +204,7 @@ export default function BookPage() {
             />
           </label>
           <label className="block">
-            <span className="mb-1 block text-sm font-semibold text-white/80">Vehicle (make/model/plate)</span>
+            <span className="mb-1 block text-sm font-semibold text-gray-700 dark:text-white/80">Vehicle (make/model/plate)</span>
             <input value={vehicleInfo} onChange={(e) => setVehicleInfo(e.target.value)} className="input" />
           </label>
           {error && <p className="text-sm text-brand-red">{error}</p>}
@@ -245,9 +245,9 @@ function StepIndicator({ step }: { step: Step }) {
   return (
     <div className="mt-6 flex gap-2 text-xs font-semibold uppercase tracking-wide">
       {steps.map((s, i) => (
-        <span key={s.key} className={i <= activeIndex ? "text-brand-red" : "text-white/30"}>
+        <span key={s.key} className={i <= activeIndex ? "text-brand-red" : "text-gray-300 dark:text-white/30"}>
           {s.label}
-          {i < steps.length - 1 && <span className="mx-2 text-white/20">/</span>}
+          {i < steps.length - 1 && <span className="mx-2 text-gray-200 dark:text-white/20">/</span>}
         </span>
       ))}
     </div>

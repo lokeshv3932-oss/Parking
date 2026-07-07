@@ -30,8 +30,8 @@ export default function AdminDashboardPage() {
       {summary && (
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {TILES.map((tile) => (
-            <div key={tile.key} className="rounded-lg border border-white/10 bg-brand-charcoal p-5">
-              <p className="text-xs uppercase tracking-wide text-white/50">{tile.label}</p>
+            <div key={tile.key} className="rounded-lg border border-black/10 bg-gray-50 p-5 dark:border-white/10 dark:bg-brand-charcoal">
+              <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-white/50">{tile.label}</p>
               <p className="mt-2 text-3xl font-black text-brand-red">{summary[tile.key]}</p>
             </div>
           ))}
