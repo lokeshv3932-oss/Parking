@@ -12,6 +12,7 @@ frontend/build/
 frontend/.env
 frontend/.env.local
 frontend/next-env.d.ts
+frontend/tsconfig.tsbuildinfo
 
 # Env files
 .env
