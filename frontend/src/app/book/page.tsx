@@ -6,6 +6,7 @@ import { apiGet, apiPost, ApiError } from "@/lib/api";
 import { getStripe } from "@/lib/stripe";
 import type { CreateBookingRequest, CreateBookingResponse, SpotDto, SpotType } from "@/lib/types";
 import CheckoutForm from "@/components/CheckoutForm";
+import DateRangeCalendar from "@/components/DateRangeCalendar";
 
 const SPOT_TYPES: { value: SpotType | ""; label: string }[] = [
   { value: "", label: "Any type" },
@@ -97,27 +98,16 @@ export default function BookPage() {
 
       {step === "search" && (
         <form onSubmit={handleSearch} className="mt-8 space-y-5">
-          <div className="grid grid-cols-2 gap-4">
-            <label className="block">
-              <span className="mb-1 block text-sm font-semibold text-white/80">Start date</span>
-              <input
-                type="date"
-                required
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="input"
-              />
-            </label>
-            <label className="block">
-              <span className="mb-1 block text-sm font-semibold text-white/80">End date</span>
-              <input
-                type="date"
-                required
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="input"
-              />
-            </label>
+          <div>
+            <span className="mb-1 block text-sm font-semibold text-white/80">Select your dates</span>
+            <DateRangeCalendar
+              startDate={startDate}
+              endDate={endDate}
+              onChange={(start, end) => {
+                setStartDate(start);
+                setEndDate(end);
+              }}
+            />
           </div>
           <label className="block">
             <span className="mb-1 block text-sm font-semibold text-white/80">Vehicle type</span>
@@ -132,7 +122,7 @@ export default function BookPage() {
           {error && <p className="text-sm text-brand-red">{error}</p>}
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !startDate || !endDate}
             className="w-full rounded-md bg-brand-red py-3 font-bold text-white hover:bg-brand-red-dark disabled:opacity-50 transition-colors"
           >
             {loading ? "Searching..." : "Check Availability"}
