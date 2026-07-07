@@ -23,7 +23,7 @@ type Step = "search" | "select" | "details" | "pay";
 
 export default function BookPage() {
   const [step, setStep] = useState<Step>("search");
-  const [type, setType] = useState<SpotType | "">("");
+  const [typeFilter, setTypeFilter] = useState<SpotType | "">("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [spots, setSpots] = useState<SpotDto[]>([]);
@@ -44,9 +44,9 @@ export default function BookPage() {
     setError(null);
     try {
       const params = new URLSearchParams({ start: startDate, end: endDate });
-      if (type) params.set("type", type);
       const results = await apiGet<SpotDto[]>(`/api/spots/availability?${params.toString()}`);
       setSpots(results);
+      setTypeFilter("");
       setStep("select");
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Unable to search availability.");
@@ -109,16 +109,6 @@ export default function BookPage() {
               }}
             />
           </div>
-          <label className="block">
-            <span className="mb-1 block text-sm font-semibold text-white/80">Vehicle type</span>
-            <select value={type} onChange={(e) => setType(e.target.value as SpotType | "")} className="input">
-              {SPOT_TYPES.map((t) => (
-                <option key={t.value} value={t.value}>
-                  {t.label}
-                </option>
-              ))}
-            </select>
-          </label>
           {error && <p className="text-sm text-brand-red">{error}</p>}
           <button
             type="submit"
@@ -135,25 +125,48 @@ export default function BookPage() {
           <button onClick={() => setStep("search")} className="mb-4 text-sm text-white/60 hover:text-brand-red">
             &larr; Change dates
           </button>
-          {spots.length === 0 ? (
-            <p className="text-white/70">No spots available for those dates. Try a different range.</p>
-          ) : (
-            <div className="grid gap-3 sm:grid-cols-2">
-              {spots.map((spot) => (
-                <button
-                  key={spot.id}
-                  onClick={() => selectSpot(spot)}
-                  className="rounded-lg border border-white/10 bg-brand-charcoal p-4 text-left hover:border-brand-red transition-colors"
-                >
-                  <p className="font-bold">{spot.spotNumber}</p>
-                  <p className="text-xs uppercase tracking-wide text-white/50">
-                    {spot.spotType.replace("_", " ")}
-                  </p>
-                  <p className="mt-2 text-brand-red font-semibold">{formatMoney(spot.dailyRateCents)}/day</p>
-                </button>
+
+          <label className="mb-4 block">
+            <span className="mb-1 block text-sm font-semibold text-white/80">Filter by vehicle type</span>
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value as SpotType | "")}
+              className="input"
+            >
+              {SPOT_TYPES.map((t) => (
+                <option key={t.value} value={t.value}>
+                  {t.label}
+                </option>
               ))}
-            </div>
-          )}
+            </select>
+          </label>
+
+          {(() => {
+            const filteredSpots = typeFilter ? spots.filter((s) => s.spotType === typeFilter) : spots;
+            if (spots.length === 0) {
+              return <p className="text-white/70">No spots available for those dates. Try a different range.</p>;
+            }
+            if (filteredSpots.length === 0) {
+              return <p className="text-white/70">No {typeFilter.replace("_", " ").toLowerCase()} spots available for those dates.</p>;
+            }
+            return (
+              <div className="grid gap-3 sm:grid-cols-2">
+                {filteredSpots.map((spot) => (
+                  <button
+                    key={spot.id}
+                    onClick={() => selectSpot(spot)}
+                    className="rounded-lg border border-white/10 bg-brand-charcoal p-4 text-left hover:border-brand-red transition-colors"
+                  >
+                    <p className="font-bold">{spot.spotNumber}</p>
+                    <p className="text-xs uppercase tracking-wide text-white/50">
+                      {spot.spotType.replace("_", " ")}
+                    </p>
+                    <p className="mt-2 text-brand-red font-semibold">{formatMoney(spot.dailyRateCents)}/day</p>
+                  </button>
+                ))}
+              </div>
+            );
+          })()}
         </div>
       )}
 
