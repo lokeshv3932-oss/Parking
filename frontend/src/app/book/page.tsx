@@ -90,14 +90,14 @@ export default function BookPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-16">
+    <div className="mx-auto max-w-6xl px-4 py-16">
       <h1 className="text-3xl font-black">Book Parking</h1>
       <p className="mt-2 text-white/70">Reserve a spot online and pay securely to confirm instantly.</p>
 
       <StepIndicator step={step} />
 
       {step === "search" && (
-        <form onSubmit={handleSearch} className="mt-8 space-y-5">
+        <form onSubmit={handleSearch} className="mx-auto mt-8 max-w-xl space-y-5">
           <div>
             <span className="mb-1 block text-sm font-semibold text-white/80">Select your dates</span>
             <DateRangeCalendar
@@ -126,7 +126,7 @@ export default function BookPage() {
             &larr; Change dates
           </button>
 
-          <label className="mb-4 block">
+          <label className="mb-4 block max-w-xs">
             <span className="mb-1 block text-sm font-semibold text-white/80">Filter by vehicle type</span>
             <select
               value={typeFilter}
@@ -150,18 +150,16 @@ export default function BookPage() {
               return <p className="text-white/70">No {typeFilter.replace("_", " ").toLowerCase()} spots available for those dates.</p>;
             }
             return (
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid grid-cols-5 gap-2 sm:grid-cols-10">
                 {filteredSpots.map((spot) => (
                   <button
                     key={spot.id}
                     onClick={() => selectSpot(spot)}
-                    className="rounded-lg border border-white/10 bg-brand-charcoal p-4 text-left hover:border-brand-red transition-colors"
+                    title={`${spot.spotType.replace("_", " ")} · ${formatMoney(spot.dailyRateCents)}/day`}
+                    className="rounded-md border border-white/10 bg-brand-charcoal p-2 text-center hover:border-brand-red transition-colors"
                   >
-                    <p className="font-bold">{spot.spotNumber}</p>
-                    <p className="text-xs uppercase tracking-wide text-white/50">
-                      {spot.spotType.replace("_", " ")}
-                    </p>
-                    <p className="mt-2 text-brand-red font-semibold">{formatMoney(spot.dailyRateCents)}/day</p>
+                    <p className="text-sm font-bold">{spot.spotNumber}</p>
+                    <p className="text-[10px] font-semibold text-brand-red">{formatMoney(spot.dailyRateCents)}</p>
                   </button>
                 ))}
               </div>
@@ -171,7 +169,7 @@ export default function BookPage() {
       )}
 
       {step === "details" && selectedSpot && (
-        <form onSubmit={handleCreateBooking} className="mt-8 space-y-5">
+        <form onSubmit={handleCreateBooking} className="mx-auto mt-8 max-w-xl space-y-5">
           <button
             type="button"
             onClick={() => setStep("select")}
@@ -221,7 +219,7 @@ export default function BookPage() {
       )}
 
       {step === "pay" && booking && (
-        <div className="mt-8">
+        <div className="mx-auto mt-8 max-w-xl">
           <p className="mb-4 rounded-lg border border-brand-red/40 bg-brand-red/10 p-4 text-sm">
             Total due: <strong>{formatMoney(booking.amountCents)}</strong> &mdash; your spot is held for 15
             minutes while you complete payment.
