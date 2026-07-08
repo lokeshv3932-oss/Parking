@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const FEATURES = [
@@ -7,6 +8,14 @@ const FEATURES = [
   { title: "Mechanic Available", desc: "On-site repair services so downtime stays short." },
   { title: "Spacious Truck & Trailer Parking", desc: "300 spots built for heavy-duty vehicles." },
 ];
+
+const GALLERY = [
+  { src: "/images/truck-1.jpg", alt: "Semi truck with tandem trailer" },
+  { src: "/images/truck-2.jpg", alt: "Freight truck parked in a lot" },
+  { src: "/images/truck-3.jpg", alt: "Truck parking lot" },
+];
+
+const ADDRESS = "4444 Symmes Rd, Fairfield, OH";
 
 export default function HomePage() {
   return (
@@ -52,6 +61,21 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="mx-auto max-w-6xl px-4 py-16">
+        <h2 className="text-center text-2xl font-bold">Our Lot</h2>
+        <div className="mt-8 grid gap-4 sm:grid-cols-3">
+          {GALLERY.map((img) => (
+            <div key={img.src} className="relative aspect-[4/3] overflow-hidden rounded-lg">
+              <Image src={img.src} alt={img.alt} fill sizes="(max-width: 640px) 100vw, 33vw" className="object-cover" />
+            </div>
+          ))}
+        </div>
+        <p className="mt-3 text-center text-xs text-gray-400 dark:text-white/30">
+          Representative photos, not our exact lot. Photos: Dwight Burdette, Mike Mozart, DanTD &mdash;
+          licensed CC BY / CC BY-SA via Wikimedia Commons.
+        </p>
+      </section>
+
       <section className="mx-auto max-w-6xl px-4 py-16 text-center">
         <h2 className="text-2xl font-bold">Premium Full-Concrete Parking Surface</h2>
         <p className="mx-auto mt-3 max-w-xl text-gray-600 dark:text-white/70">
@@ -62,7 +86,21 @@ export default function HomePage() {
           <a href="tel:5133752022" className="mt-2 block text-3xl font-black text-brand-red">
             513-375-2022
           </a>
-          <p className="mt-2 text-sm text-gray-500 dark:text-white/60">4444 Symmes Rd, Fairfield, OH</p>
+          <p className="mt-2 text-sm text-gray-500 dark:text-white/60">{ADDRESS}</p>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pb-20">
+        <h2 className="text-center text-2xl font-bold">Find Us</h2>
+        <p className="mx-auto mt-2 max-w-xl text-center text-gray-600 dark:text-white/70">{ADDRESS}</p>
+        <div className="mt-6 overflow-hidden rounded-lg border border-black/10 dark:border-white/10">
+          <iframe
+            title="Map to Symmes Fleet Parking & Repair"
+            src={`https://www.google.com/maps?q=${encodeURIComponent(ADDRESS)}&output=embed`}
+            className="h-96 w-full border-0"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
         </div>
       </section>
     </div>
