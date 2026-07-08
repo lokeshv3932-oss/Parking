@@ -1,7 +1,10 @@
 import { getToken } from "./auth";
+import { getCustomerToken } from "./customerAuth";
 import type { ApiErrorBody } from "./types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
+
+export type AuthMode = boolean | "customer";
 
 export class ApiError extends Error {
   status: number;
@@ -12,14 +15,19 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T>(path: string, options: RequestInit = {}, auth = false): Promise<T> {
+async function request<T>(path: string, options: RequestInit = {}, auth: AuthMode = false): Promise<T> {
   const headers: HeadersInit = {
     "Content-Type": "application/json",
     ...(options.headers ?? {}),
   };
 
-  if (auth) {
+  if (auth === true) {
     const token = getToken();
+    if (token) {
+      (headers as Record<string, string>)["Authorization"] = `Bearer ${token}`;
+    }
+  } else if (auth === "customer") {
+    const token = getCustomerToken();
     if (token) {
       (headers as Record<string, string>)["Authorization"] = `Bearer ${token}`;
     }
@@ -48,14 +56,14 @@ async function request<T>(path: string, options: RequestInit = {}, auth = false)
   return (await response.json()) as T;
 }
 
-export function apiGet<T>(path: string, auth = false): Promise<T> {
+export function apiGet<T>(path: string, auth: AuthMode = false): Promise<T> {
   return request<T>(path, { method: "GET" }, auth);
 }
 
-export function apiPost<T>(path: string, body: unknown, auth = false): Promise<T> {
+export function apiPost<T>(path: string, body: unknown, auth: AuthMode = false): Promise<T> {
   return request<T>(path, { method: "POST", body: JSON.stringify(body) }, auth);
 }
 
-export function apiPatch<T>(path: string, body: unknown, auth = false): Promise<T> {
+export function apiPatch<T>(path: string, body: unknown, auth: AuthMode = false): Promise<T> {
   return request<T>(path, { method: "PATCH", body: JSON.stringify(body) }, auth);
 }

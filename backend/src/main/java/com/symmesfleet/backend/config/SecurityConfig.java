@@ -59,8 +59,15 @@ public class SecurityConfig {
                         .requestMatchers("/api/spots/**").permitAll()
                         .requestMatchers("/api/bookings/**").permitAll()
                         .requestMatchers("/api/mechanic-requests").permitAll()
+                        .requestMatchers(
+                                "/api/customer/signup",
+                                "/api/customer/login",
+                                "/api/customer/verify-email",
+                                "/api/customer/resend-verification"
+                        ).permitAll()
                         .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/customer/me/**").hasAuthority("ROLE_CUSTOMER")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

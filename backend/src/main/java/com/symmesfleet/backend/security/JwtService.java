@@ -17,28 +17,43 @@ public class JwtService {
 
     private final SecretKey key;
     private final long expirationMinutes;
+    private final long customerExpirationMinutes;
 
     public JwtService(
             @Value("${app.jwt.secret}") String secret,
-            @Value("${app.jwt.expiration-minutes}") long expirationMinutes
+            @Value("${app.jwt.expiration-minutes}") long expirationMinutes,
+            @Value("${app.jwt.customer-expiration-minutes}") long customerExpirationMinutes
     ) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.expirationMinutes = expirationMinutes;
+        this.customerExpirationMinutes = customerExpirationMinutes;
     }
 
     public String generateToken(String username, String role) {
+        return generateToken(username, role, expirationMinutes);
+    }
+
+    public String generateCustomerToken(String username, String role) {
+        return generateToken(username, role, customerExpirationMinutes);
+    }
+
+    private String generateToken(String username, String role, long minutes) {
         Instant now = Instant.now();
         return Jwts.builder()
                 .subject(username)
                 .claim("role", role)
                 .issuedAt(Date.from(now))
-                .expiration(Date.from(now.plusSeconds(expirationMinutes * 60)))
+                .expiration(Date.from(now.plusSeconds(minutes * 60)))
                 .signWith(key)
                 .compact();
     }
 
     public long expirationSeconds() {
         return expirationMinutes * 60;
+    }
+
+    public long customerExpirationSeconds() {
+        return customerExpirationMinutes * 60;
     }
 
     public Claims parseClaims(String token) {

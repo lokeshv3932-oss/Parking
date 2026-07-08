@@ -30,11 +30,16 @@ app:
   jwt:
     secret: ${JWT_SECRET:dev-only-secret-change-me-dev-only-secret-change-me}
     expiration-minutes: ${JWT_EXPIRATION_MINUTES:480}
+    customer-expiration-minutes: ${CUSTOMER_JWT_EXPIRATION_MINUTES:43200}
   booking:
     hold-minutes: ${BOOKING_HOLD_MINUTES:15}
   stripe:
     secret-key: ${STRIPE_SECRET_KEY:}
     webhook-secret: ${STRIPE_WEBHOOK_SECRET:}
+  frontend-url: ${FRONTEND_URL:http://localhost:3000}
+  resend:
+    api-key: ${RESEND_API_KEY:}
+    from-email: ${RESEND_FROM_EMAIL:onboarding@resend.dev}
 
 management:
   endpoints:

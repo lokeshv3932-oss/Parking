@@ -23,10 +23,12 @@ public class BookingWriteOps {
 
     private final BookingRepository bookingRepository;
     private final ParkingSpotRepository spotRepository;
+    private final CustomerService customerService;
 
-    public BookingWriteOps(BookingRepository bookingRepository, ParkingSpotRepository spotRepository) {
+    public BookingWriteOps(BookingRepository bookingRepository, ParkingSpotRepository spotRepository, CustomerService customerService) {
         this.bookingRepository = bookingRepository;
         this.spotRepository = spotRepository;
+        this.customerService = customerService;
     }
 
     @Transactional
@@ -45,6 +47,7 @@ public class BookingWriteOps {
 
         Booking booking = new Booking();
         booking.setSpot(spot);
+        customerService.currentCustomer().ifPresent(booking::setCustomer);
         booking.setStartDate(req.startDate());
         booking.setEndDate(req.endDate());
         booking.setCustomerName(req.customerName());

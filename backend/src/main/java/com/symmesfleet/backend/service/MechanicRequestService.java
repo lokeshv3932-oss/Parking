@@ -14,13 +14,16 @@ import org.springframework.stereotype.Service;
 public class MechanicRequestService {
 
     private final MechanicRequestRepository repository;
+    private final CustomerService customerService;
 
-    public MechanicRequestService(MechanicRequestRepository repository) {
+    public MechanicRequestService(MechanicRequestRepository repository, CustomerService customerService) {
         this.repository = repository;
+        this.customerService = customerService;
     }
 
     public MechanicRequestDto create(MechanicRequestCreateRequest request) {
         MechanicRequest entity = new MechanicRequest();
+        customerService.currentCustomer().ifPresent(entity::setCustomer);
         entity.setCustomerName(request.customerName());
         entity.setCustomerEmail(request.customerEmail());
         entity.setCustomerPhone(request.customerPhone());

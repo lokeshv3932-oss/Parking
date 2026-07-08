@@ -75,7 +75,7 @@ export default function BookPage() {
         customerPhone: customerPhone || undefined,
         vehicleInfo: vehicleInfo || undefined,
       };
-      const created = await apiPost<CreateBookingResponse>("/api/bookings", payload);
+      const created = await apiPost<CreateBookingResponse>("/api/bookings", payload, "customer");
       setBooking(created);
       setStep("pay");
     } catch (err) {

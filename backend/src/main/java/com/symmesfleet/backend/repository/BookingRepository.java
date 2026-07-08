@@ -23,6 +23,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     Page<Booking> findByStatusOrderByCreatedAtDesc(BookingStatus status, Pageable pageable);
 
+    List<Booking> findByCustomerIdOrderByCreatedAtDesc(Long customerId);
+
     @Query("""
         SELECT COUNT(b) FROM Booking b
         WHERE b.spot.id = :spotId

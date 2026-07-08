@@ -89,3 +89,23 @@ export interface ApiErrorBody {
   error: string;
   message: string;
 }
+
+export interface CustomerSignupRequest {
+  email: string;
+  password: string;
+}
+
+export interface CustomerLoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface CustomerAuthResponse {
+  token: string;
+  email: string;
+  expiresInSeconds: number;
+}
+
+export interface MessageResponse {
+  message: string;
+}

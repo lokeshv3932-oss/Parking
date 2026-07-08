@@ -32,7 +32,7 @@ export default function MechanicRequestPage() {
         ...form,
         preferredDate: form.preferredDate ? form.preferredDate : undefined,
       };
-      const created = await apiPost<MechanicRequestDto>("/api/mechanic-requests", payload);
+      const created = await apiPost<MechanicRequestDto>("/api/mechanic-requests", payload, "customer");
       setResult(created);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Something went wrong. Please try again.");
