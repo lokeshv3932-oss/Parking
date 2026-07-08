@@ -7,6 +7,7 @@ import { getStripe } from "@/lib/stripe";
 import type { CreateBookingRequest, CreateBookingResponse, SpotDto, SpotType } from "@/lib/types";
 import CheckoutForm from "@/components/CheckoutForm";
 import DateRangeCalendar from "@/components/DateRangeCalendar";
+import RequireCustomer from "@/components/RequireCustomer";
 
 const SPOT_TYPES: { value: SpotType | ""; label: string }[] = [
   { value: "", label: "Any type" },
@@ -90,6 +91,7 @@ export default function BookPage() {
   }
 
   return (
+    <RequireCustomer>
     <div className="mx-auto max-w-6xl px-4 py-16">
       <h1 className="text-3xl font-black">Book Parking</h1>
       <p className="mt-2 text-gray-600 dark:text-white/70">Reserve a spot online and pay securely to confirm instantly.</p>
@@ -230,6 +232,7 @@ export default function BookPage() {
         </div>
       )}
     </div>
+    </RequireCustomer>
   );
 }
 

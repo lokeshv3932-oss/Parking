@@ -64,9 +64,9 @@ public class CustomerService {
     }
 
     /**
-     * Resolves the logged-in customer from the request's JWT, if any was supplied.
-     * Used by the (guest-allowed) booking/mechanic-request endpoints to optionally
-     * link the record to an account without requiring one.
+     * Resolves the logged-in customer from the request's JWT. Booking and mechanic-request
+     * creation now require ROLE_CUSTOMER (enforced in SecurityConfig), so this should always
+     * resolve on those paths; kept as Optional since it's also safe to call anywhere else.
      */
     public Optional<Customer> currentCustomer() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

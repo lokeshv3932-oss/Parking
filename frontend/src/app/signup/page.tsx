@@ -45,8 +45,7 @@ export default function SignupPage() {
     <div className="mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center px-4">
       <h1 className="text-2xl font-black">Create an Account</h1>
       <p className="mt-2 text-sm text-gray-600 dark:text-white/70">
-        Optional &mdash; you can still book parking or request a mechanic as a guest without an
-        account.
+        An account is required to book parking or request a mechanic.
       </p>
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         <label className="block">
