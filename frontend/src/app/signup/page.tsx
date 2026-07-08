@@ -2,16 +2,18 @@
 
 import { useState, FormEvent } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { apiPost, ApiError } from "@/lib/api";
-import type { CustomerSignupRequest, MessageResponse } from "@/lib/types";
+import { saveCustomerSession } from "@/lib/customerAuth";
+import type { CustomerAuthResponse, CustomerSignupRequest } from "@/lib/types";
 
 export default function SignupPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -29,28 +31,14 @@ export default function SignupPage() {
     setLoading(true);
     try {
       const payload: CustomerSignupRequest = { email, password };
-      await apiPost<MessageResponse>("/api/customer/signup", payload);
-      setDone(true);
+      const res = await apiPost<CustomerAuthResponse>("/api/customer/signup", payload);
+      saveCustomerSession(res.token, res.email);
+      router.push("/account");
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Signup failed. Please try again.");
     } finally {
       setLoading(false);
     }
-  }
-
-  if (done) {
-    return (
-      <div className="mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center px-4 text-center">
-        <h1 className="text-2xl font-black">Check Your Email</h1>
-        <p className="mt-4 text-gray-600 dark:text-white/70">
-          We sent a verification link to <strong>{email}</strong>. Click it to activate your
-          account, then come back and log in.
-        </p>
-        <Link href="/login" className="mt-6 text-brand-red hover:underline">
-          Go to login
-        </Link>
-      </div>
-    );
   }
 
   return (

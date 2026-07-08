@@ -5,47 +5,28 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { apiPost, ApiError } from "@/lib/api";
 import { saveCustomerSession } from "@/lib/customerAuth";
-import type { CustomerAuthResponse, CustomerLoginRequest, MessageResponse } from "@/lib/types";
+import type { CustomerAuthResponse, CustomerLoginRequest } from "@/lib/types";
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [needsVerification, setNeedsVerification] = useState(false);
-  const [resendMessage, setResendMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    setNeedsVerification(false);
-    setResendMessage(null);
     try {
       const payload: CustomerLoginRequest = { email, password };
       const res = await apiPost<CustomerAuthResponse>("/api/customer/login", payload);
       saveCustomerSession(res.token, res.email);
       router.push("/account");
     } catch (err) {
-      if (err instanceof ApiError && err.status === 403) {
-        setNeedsVerification(true);
-        setError(err.message);
-      } else {
-        setError(err instanceof ApiError ? err.message : "Login failed.");
-      }
+      setError(err instanceof ApiError ? err.message : "Login failed.");
     } finally {
       setLoading(false);
-    }
-  }
-
-  async function handleResend() {
-    setResendMessage(null);
-    try {
-      const res = await apiPost<MessageResponse>("/api/customer/resend-verification", { email });
-      setResendMessage(res.message);
-    } catch {
-      setResendMessage("Something went wrong. Please try again.");
     }
   }
 
@@ -74,16 +55,6 @@ export default function LoginPage() {
           />
         </label>
         {error && <p className="text-sm text-brand-red">{error}</p>}
-        {needsVerification && (
-          <button
-            type="button"
-            onClick={handleResend}
-            className="text-sm text-brand-red hover:underline"
-          >
-            Resend verification email
-          </button>
-        )}
-        {resendMessage && <p className="text-sm text-gray-600 dark:text-white/70">{resendMessage}</p>}
         <button
           type="submit"
           disabled={loading}

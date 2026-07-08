@@ -35,12 +35,6 @@ public class GlobalExceptionHandler {
                 .body(ApiError.of(401, "Unauthorized", "Invalid username or password."));
     }
 
-    @ExceptionHandler(EmailNotVerifiedException.class)
-    public ResponseEntity<ApiError> handleEmailNotVerified(EmailNotVerifiedException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(ApiError.of(403, "Email Not Verified", ex.getMessage()));
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleValidation(MethodArgumentNotValidException ex) {
         String message = ex.getBindingResult().getFieldErrors().stream()

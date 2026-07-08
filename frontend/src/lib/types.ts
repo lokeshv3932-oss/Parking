@@ -105,7 +105,3 @@ export interface CustomerAuthResponse {
   email: string;
   expiresInSeconds: number;
 }
-
-export interface MessageResponse {
-  message: string;
-}
